@@ -184,6 +184,48 @@
                 </div>
             </section>
 
+            <!-- Smart Form Simulator -->
+            <section class="bg-slate-800 text-white rounded-2xl p-8 shadow-lg">
+                <div class="mb-8">
+                    <h2 class="text-3xl font-bold mb-2">จำลองระบบ Smart Form</h2>
+                    <p class="text-slate-300">ทดลองเลือกประเภทข้อมูลด้านล่าง ระบบจะผูกเงื่อนไขกฎหมาย (Mapping) อัตโนมัติ เพื่อลดความผิดพลาดในการกรอกของพนักงาน</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm text-slate-400 mb-1">1. ชื่อระบบ (System Name)</label>
+                            <input type="text" value="CRM Salesforce" readonly class="w-full bg-slate-700 border border-slate-600 rounded p-3 text-white outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-orange-400 mb-1">2. เลือกประเภทข้อมูล (Data Category)</label>
+                            <select id="simCategory" class="w-full bg-white text-slate-900 border border-slate-300 rounded p-3 outline-none font-bold cursor-pointer">
+                                <option value="">-- กรุณาเลือก --</option>
+                                <option value="PDPA">ข้อมูลส่วนบุคคล (Personal Data)</option>
+                                <option value="Financial">ข้อมูลการเงินและบัญชี</option>
+                                <option value="IT_Logs">ข้อมูลจราจรและระบบไอที (IT Logs)</option>
+                                <option value="Operational">ข้อมูลการดำเนินงาน (Business Need)</option>
+                                <option value="Legal">ข้อมูลสัญญาและคดี (Legal/Contracts)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-700 rounded-xl p-6 border border-slate-600">
+                        <h4 class="text-sm text-slate-400 mb-4 uppercase tracking-wider font-bold">ผลการคำนวณอัตโนมัติ</h4>
+                        <div class="space-y-4">
+                            <div>
+                                <p class="text-xs text-slate-400">อายุการจัดเก็บสูงสุด (Max Retention)</p>
+                                <p id="resRetention" class="text-lg font-bold text-emerald-400">-</p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-slate-400">วิธีการจัดการเมื่อครบกำหนด (Action)</p>
+                                <p id="resAction" class="text-lg font-bold text-orange-400">-</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <!-- ROI Charts -->
             <section class="border-t border-slate-200 pt-10">
                 <div class="text-center mb-8">
@@ -466,6 +508,21 @@
         }
 
         initCharts();
+
+        // --- Smart Form Simulator Logic ---
+        document.getElementById('simCategory').addEventListener('change', function() {
+            const val = this.value;
+            const resRet = document.getElementById('resRetention');
+            const resAct = document.getElementById('resAction');
+            
+            if (rules[val]) {
+                resRet.innerText = rules[val].ret;
+                resAct.innerText = rules[val].act;
+            } else {
+                resRet.innerText = '-';
+                resAct.innerText = '-';
+            }
+        });
 
         // --- Form Logic: Dynamic Rows & Submit Code ---
         let currentSubmitCode = null;
